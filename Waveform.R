@@ -484,4 +484,84 @@ setMethod(
   def = function(x) length(x) - N(x))
 
 
+################################################################################
+# Waveform arithmetic   ########################################################
+################################################################################
+
+# add 2 Waveform objects
+setMethod(
+  f   = '+',
+  sig = c(e1 = 'Waveform', e2 = 'Waveform'),
+  def = function(e1, e2) {
+    .compute <- TRUE
+    if (N(e1) != N(e2)) {
+      message(sprintf('%s (N = %d) and %s (N = %d) must have the same number of samples to be added.',
+                      deparse(substitute(e1)), N(e1),
+                      deparse(substitute(e2)), N(e2)))
+      .compute <- FALSE
+    }
+    if (length(e1) != length(e2)) {
+      message(sprintf('%s (length = %d) and %s (length = %d) must have the same length to be added.',
+                      deparse(substitute(e1)), length(e1),
+                      deparse(substitute(e2)), length(e2)))
+      .compute <- FALSE
+    }
+    if (sampleRate(e1) != sampleRate(e2)) {
+      message(sprintf('%s (rate = %d) and %s (rate = %d) must have the same sample rate to be added.',
+                      deparse(substitute(e1)), sampleRate(e1),
+                      deparse(substitute(e2)), sampleRate(e2)))
+      .compute <- FALSE
+    }
+    if (.compute) {
+      .samples <- samples(e1) + samples(e2)
+      new(Class      = 'Waveform',
+          samples    = .samples,
+          bitRate    = bitRate(e1),
+          sampleRate = sampleRate(e1),
+          startTime  = startTime(e1),
+          N          = N(e1))
+    } else {
+      return(NULL)
+    }
+  }
+)
+
+# subtract 2 Waveform objects
+setMethod(
+  f   = '-',
+  sig = c(e1 = 'Waveform', e2 = 'Waveform'),
+  def = function(e1, e2) {
+    .compute <- TRUE
+    if (N(e1) != N(e2)) {
+      message(sprintf('%s (N = %d) and %s (N = %d) must have the same number of samples to be subtracted.',
+                      deparse(substitute(e1)), N(e1),
+                      deparse(substitute(e2)), N(e2)))
+      .compute <- FALSE
+    }
+    if (length(e1) != length(e2)) {
+      message(sprintf('%s (length = %d) and %s (length = %d) must have the same length to be subtracted.',
+                      deparse(substitute(e1)), length(e1),
+                      deparse(substitute(e2)), length(e2)))
+      .compute <- FALSE
+    }
+    if (sampleRate(e1) != sampleRate(e2)) {
+      message(sprintf('%s (rate = %d) and %s (rate = %d) must have the same sample rate to be subtracted.',
+                      deparse(substitute(e1)), sampleRate(e1),
+                      deparse(substitute(e2)), sampleRate(e2)))
+      .compute <- FALSE
+    }
+    if (.compute) {
+      .samples <- samples(e1) - samples(e2)
+      new(Class      = 'Waveform',
+          samples    = .samples,
+          bitRate    = bitRate(e1),
+          sampleRate = sampleRate(e1),
+          startTime  = startTime(e1),
+          N          = N(e1))
+    } else {
+      return(NULL)
+    }
+  }
+)
+
 
