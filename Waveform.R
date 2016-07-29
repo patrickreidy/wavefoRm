@@ -28,7 +28,8 @@ setClass(
                bitRate    = 'numeric',
                sampleRate = 'numeric',
                startTime  = 'numeric',
-               N          = 'numeric'))
+               N          = 'numeric')
+  )
 
 
 
@@ -194,10 +195,23 @@ setMethod(
     .hamming <- .alpha - (.beta * cos(2*pi*.n / (N(x) - 1)))
     .samps   <- samples(x)[1:N(x)]
     .samps   <- .hamming * .samps
-    .pad     <- rep(0, length(samples(x)) - N(x))
+    .pad     <- rep(0, length(x) - N(x))
     x@samples <- c(.samps, .pad)
     return(x)
   })
+
+
+#############################################################################
+#  Length (different from number of samples)                         length #
+#############################################################################
+
+setMethod(
+  f   = 'length',
+  sig = c(x = 'Waveform'),
+  def = function(x) {
+    length(samples(x))
+  }
+)
 
 
 #############################################################################
@@ -249,7 +263,7 @@ setMethod(
   def = function(waveform, alpha) {
     .samps <- samples(waveform)[1:N(waveform)]
     .samps <- .samps - (alpha * c(0, .samps[1:(N(waveform)-1)]))
-    .pad   <- rep(0, times = length(samples(waveform)) - N(waveform))
+    .pad   <- rep(0, times = length(waveform) - N(waveform))
     waveform@samples <- c(.samps, .pad)
     return(waveform)
   })
@@ -467,4 +481,7 @@ if (! isGeneric('padded'))
 setMethod(
   f   = 'padded',
   sig = c(x = 'Waveform'),
-  def = function(x) length(samples(x)) - N(x))
+  def = function(x) length(x) - N(x))
+
+
+
